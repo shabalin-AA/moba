@@ -1,5 +1,5 @@
 require 'projectile'
-require 'IHasTarget'
+require 'has_target'
 
 Hero = IHasTarget:new(10000, 'any')
 

@@ -1,4 +1,4 @@
-require 'IHasTarget'
+require 'has_target'
 
 Projectile = IHasTarget:new(30000)
 
