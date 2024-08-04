@@ -4,6 +4,13 @@ function clamp(x, min, max)
   return x
 end
 
+function distance(x1,y1,x2,y2)
+  local dx,dy = x2-x1, y2-y1
+  local D = dx*dx + dy*dy
+  local d = math.sqrt(D)
+  return d
+end
+
 require 'player'
 require 'tree'
 
@@ -25,16 +32,22 @@ players = {}
 walls = {}
 projectiles = {}
 
-function destroy_object(t)
-  local destroy = function(tab, k, v)
-    if v == t then 
-      v.body:destroy()
-      tab[k] = nil
-      return
+function spawn_projectile(p)
+  for i=1,#projectiles+1 do
+    if projectiles[i] == nil then 
+      projectiles[i] = p 
+      break
     end
   end
+end
+
+function destroy_object(obj)
   for k,v in pairs(projectiles) do
-    destroy(projectiles, k, v)
+    if v == obj then
+      v.body:destroy()
+      v.body = nil
+      projectiles[k] = nil
+    end
   end
 end
 

@@ -1,6 +1,6 @@
 require 'has_target'
 
-Projectile = IHasTarget:new(30000)
+Projectile = HasTarget:new(30000)
 
 function Projectile:new(world, x, y, target_type)
   local new = setmetatable({}, {__index = self})
@@ -15,8 +15,8 @@ function Projectile:new(world, x, y, target_type)
 end
 
 function Projectile:update(dt)
-  self:update_IHasTarget(dt)
-  if self.target == nil then 
+  self:update_HasTarget(dt)
+  if self.body and self.target == nil then
     destroy_object(self)
     return
   end

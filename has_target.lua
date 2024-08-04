@@ -1,6 +1,6 @@
-IHasTarget = {}
+HasTarget = {}
 
-function IHasTarget:new(max_velocity, target_type)
+function HasTarget:new(max_velocity, target_type)
   local new = setmetatable({},  {__index = self})
   new.target = nil
   new.target_type = target_type
@@ -8,7 +8,7 @@ function IHasTarget:new(max_velocity, target_type)
   return new
 end
 
-function IHasTarget:set_target(x,y)
+function HasTarget:set_target(x,y)
   if self.target_type == 'point' then 
     self.target = {x,y}
     return
@@ -22,7 +22,7 @@ function IHasTarget:set_target(x,y)
   if self.target == self.body then self.target = nil end
 end
 
-function IHasTarget:target_coords()
+function HasTarget:target_coords()
   if self.target.type then
     return self.target:getPosition()
   else
@@ -30,7 +30,7 @@ function IHasTarget:target_coords()
   end
 end
 
-function IHasTarget:reach_target(dt)
+function HasTarget:reach_target(dt)
   if self.target == nil then return true end
   local x,y = self.body:getPosition()
   local tx,ty = self:target_coords()
@@ -49,7 +49,7 @@ function IHasTarget:reach_target(dt)
   return false
 end
 
-function IHasTarget:update_direction(dt)
+function HasTarget:update_direction()
   if self.target == nil then
     self.direction = {0,0}
   else
@@ -59,15 +59,15 @@ function IHasTarget:update_direction(dt)
     local D = math.sqrt(dx*dx + dy*dy)
     self.direction = {dx/D, dy/D}
   end
+end
+
+function HasTarget:update_HasTarget(dt)
+  if self:reach_target(dt) then
+    self.target = nil
+  end
+  self:update_direction()
   self.body:setLinearVelocity(
     self.direction[1] * self.max_velocity * dt,
     self.direction[2] * self.max_velocity * dt
   )
-end
-
-function IHasTarget:update_IHasTarget(dt)
-  if self:reach_target(dt) then
-    self.target = nil
-  end
-  self:update_direction(dt)
 end

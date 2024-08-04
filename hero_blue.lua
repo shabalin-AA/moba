@@ -7,5 +7,6 @@ function Hero_Blue:new(world, x, y)
   new:set_physics(world, x, y)
   new.sprite = love.graphics.newImage('assets/blue.png')
   new.color = {0.2,0.2,1}
+  new.attack_range = 200
   return new
 end

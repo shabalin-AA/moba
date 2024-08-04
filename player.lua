@@ -5,7 +5,7 @@ Player = {}
 
 function Player:new(world)
   local new = setmetatable({}, {__index = self})
-  new.hero = Hero_Red:new(world, 100, 100)
+  new.hero = Hero_Blue:new(world, 100, 100)
   return new
 end
 
@@ -19,8 +19,8 @@ function Player:update(dt)
   self.hero:update(dt)
 end
 
-function Player:draw()
-  self.hero:draw()
+function Player:draw() 
+   self.hero:draw()
 end
 
 function Player:mousepressed(mx, my, button)
