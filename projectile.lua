@@ -2,7 +2,7 @@ require 'has_target'
 
 Projectile = HasTarget:new(30000)
 
-function Projectile:new(world, x, y, target_type)
+function Projectile:new(x, y, target_type)
   local new = setmetatable({}, {__index = self})
   new.target = nil
   new.target_type = target_type
@@ -17,7 +17,7 @@ end
 function Projectile:update(dt)
   self:update_HasTarget(dt)
   if self.body and self.target == nil then
-    destroy_object(self)
+    destroy(self)
     return
   end
   self.body:setAngularVelocity(0)
@@ -35,5 +35,5 @@ function Projectile:draw()
   end
   local w,h = self.sprite:getPixelDimensions()
   love.graphics.setColor(1,1,1)
-  love.graphics.draw(self.sprite, x-w/2, y-h+r/2)
+  love.graphics.draw(self.sprite, x-w/2, y-h/2)
 end

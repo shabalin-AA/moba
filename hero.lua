@@ -38,7 +38,7 @@ Hero.attack_projectile = nil
 
 function Hero:attack(tx,ty)
   local x,y = self.body:getPosition()
-  self.attack_projectile = Projectile:new(self.body:getWorld(), x, y, 'body')
+  self.attack_projectile = Projectile:new(x, y, 'body')
   self.attack_projectile:set_target(tx,ty)
   local d = distance(x,y,tx,ty)
   if d <= self.attack_range then 
@@ -57,12 +57,12 @@ Hero.last_attack_t = os.clock()
 function Hero:release_attack()
   local t = os.clock()
   if t - self.last_attack_t < self.attack_cooldown then return end
-  spawn_projectile(self.attack_projectile)
+  spawn(self.attack_projectile)
   self.attack_projectile = nil
   self.last_attack_t = os.clock()
 end
 
-function Hero:set_physics(world, x, y)
+function Hero:set_physics(x, y)
   local body = love.physics.newBody(world, x, y, 'dynamic')
   self.r = 7
   local shape = love.physics.newCircleShape(self.r)

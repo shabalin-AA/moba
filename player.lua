@@ -1,21 +1,13 @@
-require 'hero_red'
-require 'hero_blue'
-
 Player = {}
 
-function Player:new(world)
+function Player:new(hero)
   local new = setmetatable({}, {__index = self})
-  new.hero = Hero_Blue:new(world, 100, 100)
+  new.hero = hero:new(100, 100)
+  new.body = new.hero.body
   return new
 end
 
 function Player:update(dt)
-  if love.mouse.isDown(2) then
-    local mx,my = love.mouse.getPosition()
-    mx,my = world_coords(mx, my)
-    self.hero:set_target(mx,my)
-    self.hero:update_direction(dt)
-  end
   self.hero:update(dt)
 end
 
@@ -27,5 +19,18 @@ function Player:mousepressed(mx, my, button)
   if button == 1 then
     mx,my = world_coords(mx,my)
     self.hero:attack(mx,my)
+  elseif button == 2 then
+    mx,my = world_coords(mx, my)
+    self.hero:set_target(mx,my)
+    self.hero:update_direction(dt)
+  end
+end
+
+function Player:keypressed(key)
+  local mx,my = love.mouse.getPosition()
+  mx,my = world_coords(mx,my)
+  local ability = self.hero.abilities[key]
+  if ability then
+    ability(self, mx, my)
   end
 end

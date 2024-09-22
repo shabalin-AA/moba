@@ -11,10 +11,14 @@ function distance(x1,y1,x2,y2)
   return d
 end
 
+require 'hero_red'
+require 'hero_blue'
 require 'player'
 require 'tree'
 
-local world
+world = nil
+objects = {}
+active_player = 1
 
 function body_there(x, y)
   local body = nil
@@ -28,25 +32,22 @@ function body_there(x, y)
   return body
 end
 
-players = {}
-walls = {}
-projectiles = {}
-
-function spawn_projectile(p)
-  for i=1,#projectiles+1 do
-    if projectiles[i] == nil then 
-      projectiles[i] = p 
+function spawn(obj)
+  for i=1,#objects+1 do
+    if objects[i] == nil then 
+      objects[i] = obj
+      print('spawned '..i)
       break
     end
   end
 end
 
-function destroy_object(obj)
-  for k,v in pairs(projectiles) do
+function destroy(obj)
+  for k,v in pairs(objects) do
     if v == obj then
       v.body:destroy()
       v.body = nil
-      projectiles[k] = nil
+      objects[k] = nil
     end
   end
 end
@@ -66,31 +67,27 @@ function love.load()
   love.graphics.setLineStyle('rough')
   world = love.physics.newWorld(0, 0, true)
   love.physics.setMeter(100)
-  table.insert(players, Player:new(world, 10, 10))
-  table.insert(walls, Tree:new(world, 200, 200))
-  table.insert(walls, Tree:new(world, 300, 200))
-  table.insert(walls, Tree:new(world, 400, 200))
-  table.insert(walls, Tree:new(world, 500, 200))
+  spawn(Player:new(Hero_Blue))
+  spawn(Player:new(Hero_Red))
+  spawn(Tree:new(200, 200))
+  spawn(Tree:new(300, 200))
+  spawn(Tree:new(400, 200))
+  spawn(Tree:new(500, 200))
 end
 
 function love.update(dt)
   world:update(dt)
-  for k,v in pairs(players) do
-    if v.update then v:update(dt) end
-  end
-  for k,v in pairs(walls) do
-    if v.update then v:update(dt) end
-  end
-  for k,v in pairs(projectiles) do
+  for k,v in pairs(objects) do
     if v.update then v:update(dt) end
   end
 end
 
 local floor_sprite = love.graphics.newImage('assets/floor.png')
 local floor_w, floor_h = floor_sprite:getPixelDimensions()
+
 function love.draw()
   local w,h = WORLD_W, WORLD_H
-  local px, py = players[1].hero.body:getPosition()
+  local px, py = objects[active_player].hero.body:getPosition()
   WORLD_X = clamp(w/2 - px*SCALE, -w, 0)
   WORLD_Y = clamp(h/2 - py*SCALE, -h, 0)
   love.graphics.translate(WORLD_X, WORLD_Y)
@@ -100,25 +97,27 @@ function love.draw()
       love.graphics.draw(floor_sprite, j, i)
     end
   end
-  for k,v in pairs(players) do
-    if v.draw then v:draw() end
-  end
-  for k,v in pairs(walls) do
-    if v.draw then v:draw() end
-  end
-  for k,v in pairs(projectiles) do
+  for k,v in pairs(objects) do
     if v.draw then v:draw() end
   end
 end
 
 function love.mousemoved(x, y, dx, dy)
-  for k,v in pairs(walls) do
+  for k,v in pairs(objects) do
     if v.mousemoved then v:mousemoved(x, y, dx, dy) end
   end
 end
 
 function love.mousepressed(x, y, button)
-  for k,v in pairs(players) do
-    v:mousepressed(x, y, button)
+  objects[active_player]:mousepressed(x, y, button)
+end
+
+function love.keypressed(key)
+  if key == '1' then
+    active_player = 1
+  elseif key == '2' then
+    active_player = 2
+  else
+    objects[active_player]:keypressed(key)
   end
 end

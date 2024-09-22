@@ -2,7 +2,7 @@ Tree = {}
 
 TREE_HITBOX_RADIUS = 10
 
-function Tree:new(world, x, y)
+function Tree:new(x, y)
   local new = setmetatable({}, {__index = self})
   local body = love.physics.newBody(world, x, y, 'static')
   local shape = love.physics.newCircleShape(TREE_HITBOX_RADIUS)
